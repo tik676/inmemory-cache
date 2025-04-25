@@ -19,10 +19,12 @@ type Cache struct {
 }
 
 func NewCache(ttl time.Duration) *Cache {
-	return &Cache{
+	cache := &Cache{
 		items: make(map[string]item),
 		ttl:   ttl,
 	}
+	go cache.regularClearCache()
+	return cache
 }
 
 func (c *Cache) Set(key string, value T) {
@@ -36,14 +38,8 @@ func (c *Cache) Set(key string, value T) {
 }
 
 func (c *Cache) Get(key string) (T, bool) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	for k, v := range c.items {
-		if time.Now().After(v.expires) {
-			delete(c.items, k)
-		}
-	}
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 
 	v, ok := c.items[key]
 	if ok {
@@ -51,6 +47,20 @@ func (c *Cache) Get(key string) (T, bool) {
 	}
 
 	return nil, false
+}
+
+func (c *Cache) regularClearCache() {
+	for {
+		time.Sleep(1 * time.Second)
+
+		c.mu.Lock()
+		for k, v := range c.items {
+			if time.Now().After(v.expires) {
+				delete(c.items, k)
+			}
+		}
+		c.mu.Unlock()
+	}
 }
 
 func (c *Cache) Clear() {
