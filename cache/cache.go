@@ -39,15 +39,17 @@ func (c *Cache) Get(key string) (T, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	v, ok := c.items[key]
-	if ok {
-		return v.value, true
-	}
 	for k, v := range c.items {
 		if time.Now().After(v.expires) {
 			delete(c.items, k)
 		}
 	}
+
+	v, ok := c.items[key]
+	if ok {
+		return v.value, true
+	}
+
 	return nil, false
 }
 
