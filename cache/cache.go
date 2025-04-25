@@ -18,6 +18,13 @@ type Cache struct {
 	ttl   time.Duration
 }
 
+func NewCache(ttl time.Duration) *Cache {
+	return &Cache{
+		items: make(map[string]item),
+		ttl:   ttl,
+	}
+}
+
 func (c *Cache) Set(key string, value T) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
