@@ -41,7 +41,7 @@ func (c *Cache) Get(key string) (T, bool) {
 
 	v, ok := c.items[key]
 	if ok {
-		return v, true
+		return v.value, true
 	}
 	for k, v := range c.items {
 		if time.Now().After(v.expires) {

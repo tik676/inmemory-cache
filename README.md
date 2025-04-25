@@ -24,7 +24,7 @@ package main
 import (
     "fmt"
     "time"
-    "github.com/tik676/inmemory-cache"
+    "github.com/tik676/inmemory-cache" // в конце добавьте /cache если используете в другом проекте
 )
 
 func main() {
