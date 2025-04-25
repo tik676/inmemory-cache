@@ -18,6 +18,7 @@ go get github.com/tik676/inmemory-cache
 ```
 Пример использования
 
+``` go
 package main
 
 import (
@@ -52,7 +53,7 @@ func main() {
         fmt.Println("Key not found.")
     }
 }
-
+```
 Методы
 Set(key string, value interface{})
 
